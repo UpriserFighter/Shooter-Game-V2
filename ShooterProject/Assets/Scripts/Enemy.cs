@@ -24,7 +24,6 @@ public class Enemy : MonoBehaviour
         if (whatIHit.tag == "Player")
         {
             whatIHit.GetComponent<Player>().LoseLife();
-            GameObject.Find("GameManager").GetComponent<GameManager>().LifeLoss();
             Instantiate(explosionPrefab, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
         }

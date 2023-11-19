@@ -13,7 +13,7 @@ public class Cloud : MonoBehaviour
         gM = GameObject.Find("GameManager");
         cloudSpeed = Random.Range(2f, 6f);
         float tempValue = Random.Range(0.1f, 1f);
-        transform.localScale = new Vector3(1, 1, 1) * tempValue;
+        transform.localScale = new Vector3 (1, 1, 1) * tempValue;
         tempValue = Random.Range(0.1f, 0.3f);
         GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, tempValue);
     }
