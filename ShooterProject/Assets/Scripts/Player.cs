@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     public GameObject bulletPrefab;
     public GameObject explosionPrefab;
     public float playerSpeed;
+    public bool playerInvincible;
     private float horizontalScreenLimit = 10f;
     private float verticalScreenLimit = 4f;
     public int lives;
@@ -17,11 +18,13 @@ public class Player : MonoBehaviour
     public AudioClip powerdownSound;
     private bool betterWeapon;
     public GameObject thruster;
+    public GameObject shield;
 
     // Start is called before the first frame update
     void Start()
     {
         playerSpeed = 6f;
+        playerInvincible = false;
         betterWeapon = false;
         lives = 3;
         gM = GameObject.Find("GameManager");
@@ -67,16 +70,19 @@ public class Player : MonoBehaviour
 
     public void LoseLife()
     {
-        lives--;
-        //lives -= 1;
-        //lives = lives - 1;
-        gM.GetComponent<GameManager>().LivesChange(lives);
-        if (lives <= 0)
+        if (playerInvincible != true)
         {
-            //Game Over
-            gM.GetComponent<GameManager>().GameOver();
-            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-            Destroy(this.gameObject);
+            lives--;
+            //lives -= 1;
+            //lives = lives - 1;
+            gM.GetComponent<GameManager>().LivesChange(lives);
+            if (lives <= 0)
+            {
+                //Game Over
+                gM.GetComponent<GameManager>().GameOver();
+                Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+                Destroy(this.gameObject);
+            }
         }
     }
 
@@ -126,7 +132,10 @@ public class Player : MonoBehaviour
                 else if (tempInt == 3)
                 {
                     //Shield Powerup
+                    playerInvincible = true;
+                    StartCoroutine("ShieldPowerDown");
                     gM.GetComponent<GameManager>().PowerupChange("Shield");
+                    shield.SetActive(true);
                 }
                 break;
         }
@@ -146,6 +155,15 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(4f);
         AudioSource.PlayClipAtPoint(powerdownSound, transform.position);
         betterWeapon = false;
+        gM.GetComponent<GameManager>().PowerupChange("No Powerup");
+    }
+
+    IEnumerator ShieldPowerDown()
+    {
+        yield return new WaitForSeconds(4f);
+        AudioSource.PlayClipAtPoint(powerdownSound, transform.position);
+        playerInvincible = false;
+        shield.SetActive(false);
         gM.GetComponent<GameManager>().PowerupChange("No Powerup");
     }
 
